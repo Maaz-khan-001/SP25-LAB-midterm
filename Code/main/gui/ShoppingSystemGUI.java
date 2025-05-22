@@ -34,10 +34,6 @@ public class ShoppingSystemGUI extends JFrame {
         inputPanel.add(keywordField);
         inputPanel.add(new JLabel("Category:"));
         inputPanel.add(categoryBox);
-        inputPanel.add(new JLabel("Min Price:"));
-        inputPanel.add(minPriceField);
-        inputPanel.add(new JLabel("Max Price:"));
-        inputPanel.add(maxPriceField);
 
         JButton searchBtn = new JButton("Search");
         JButton resetBtn = new JButton("Reset");
