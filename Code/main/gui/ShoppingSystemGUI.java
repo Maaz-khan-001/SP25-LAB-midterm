@@ -6,12 +6,11 @@ import main.filter.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.util.List;
 
 public class ShoppingSystemGUI extends JFrame {
     private List<Item> inventory;
-    private JTextField keywordField, minPriceField, maxPriceField;
+    private JTextField keywordField;
     private JComboBox<String> categoryBox;
     private JTextArea resultArea;
 
@@ -24,10 +23,8 @@ public class ShoppingSystemGUI extends JFrame {
 
         inventory = Inventory.getDefaultItems(); // Creator principle
 
-        JPanel inputPanel = new JPanel(new GridLayout(5, 2, 10, 5));
+        JPanel inputPanel = new JPanel(new GridLayout(3, 2, 10, 5)); // Reduced rows from 5 to 3
         keywordField = new JTextField();
-        minPriceField = new JTextField();
-        maxPriceField = new JTextField();
         categoryBox = new JComboBox<>(new String[]{"All", "Electronics", "Footwear", "Accessories", "Office"});
 
         inputPanel.add(new JLabel("Search Keyword:"));
@@ -54,35 +51,20 @@ public class ShoppingSystemGUI extends JFrame {
     }
 
     private void performSearch() {
-        Pipeline pipeline = new Pipeline();
+        PipeLine pipeline = new PipeLine();
         String keyword = keywordField.getText().trim();
         String category = (String) categoryBox.getSelectedItem();
-        String minStr = minPriceField.getText().trim();
-        String maxStr = maxPriceField.getText().trim();
 
         if (!keyword.isEmpty()) pipeline.addFilter(new NameFilter(keyword));
         if (!"All".equals(category)) pipeline.addFilter(new CategoryFilter(category));
 
-        try {
-            if (!minStr.isEmpty() && !maxStr.isEmpty()) {
-                double min = Double.parseDouble(minStr);
-                double max = Double.parseDouble(maxStr);
-                pipeline.addFilter(new PriceFilter(min, max));
-            }
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Invalid price input!", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
         List<Item> results = pipeline.execute(inventory);
         resultArea.setText(results.isEmpty() ? "No items found." :
-            results.stream().map(Item::toString).reduce("", (a, b) -> a + b + "\n"));
+                results.stream().map(Item::toString).reduce("", (a, b) -> a + b + "\n"));
     }
 
     private void resetForm() {
         keywordField.setText("");
-        minPriceField.setText("");
-        maxPriceField.setText("");
         categoryBox.setSelectedIndex(0);
         resultArea.setText("");
     }
